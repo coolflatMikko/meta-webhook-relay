@@ -67,8 +67,18 @@ app.post("/webhook", async (req, res) => {
     }
 
     const parsedLead = {};
+    const fieldMap = {
+      "koko_nimi": "fullName",
+      "sähköposti": "email",
+      "puhelinnumero": "phone",
+      "millainen_kohde_on_kyseessä?": "locationType",
+      "onko_asunnossa_parveke_tai_terassi?": "hasBalcony",
+      "mikä_on_ulkoseinän_rakennusmateriaali?": "wallMaterial"
+    };
+    
     leadData.field_data.forEach(field => {
-      parsedLead[field.name] = field.values?.[0] || "";
+      const key = fieldMap[field.name] || field.name; // fallback to original key
+      parsedLead[key] = field.values?.[0] || "";
     });
 
     // Clean phone number
